@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: pay-service
+eureka:
+  client:
+    service-url:
+     defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    instance-id:  ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+    prefer-ip-address: true
+server:
+  port: 7070
