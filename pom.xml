@@ -17,6 +17,7 @@
         <module>api-gateway-service</module>
         <module>zuul-sidecar</module>
         <module>gateway-service</module>
+        <module>gateway-service-web</module>
         <module>web-service</module>
     </modules>
     <packaging>pom</packaging>
