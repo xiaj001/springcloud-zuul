@@ -15,7 +15,8 @@ import reactor.core.publisher.Mono;
 public class ResponseBodyRewriteFunction implements RewriteFunction<String,String> {
     @Override
     public Publisher<String> apply(ServerWebExchange exchange, String s) {
-        return null;
+        System.err.println(s);
+        return Mono.just("test body ......"+s);
     }
 
 

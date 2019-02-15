@@ -1,9 +1,6 @@
 package com.aisino.gateway.req;
 
-import com.aisino.gateway.define.ResponseBodyRewriteFunction;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -11,11 +8,8 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.AbstractServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -34,7 +28,7 @@ import java.util.regex.Pattern;
  * @create 2018-12-13 13:20
  * @since
  **/
-@Configuration
+//@Configuration
 @Log4j2
 public class ApiLocator1 {
 
@@ -59,10 +53,7 @@ public class ApiLocator1 {
                                     threadLocal.set(readBody);
                                     return true;
                                 }) .and().order(Ordered.HIGHEST_PRECEDENCE)
-                                .path(SERVICE).filters(f -> {
-                                    return f.modifyRequestBody(String.class,String.class,new ResponseBodyRewriteFunction());
-
-                                })
+                                .path(SERVICE)
                                 .uri(URI));
 
 

@@ -23,7 +23,7 @@ import java.util.Locale;
  * @Date: 2019/1/3 17:57
  * @Description:
  */
-@Configuration
+//@Configuration
 public class TestConfig {
 
 

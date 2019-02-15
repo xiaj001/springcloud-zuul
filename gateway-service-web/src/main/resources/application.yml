@@ -15,7 +15,7 @@ spring:
         locator:
           lower-case-service-id: true
           enabled: true
-      routes:
+#       routes:
 #        - id: forward-test
 #          uri: http://10.26.27.201:9090
 #          predicates:
@@ -32,16 +32,6 @@ spring:
 #        filters:
 #          ModifyRequestBody=
 #
-      - id: pay-service
-        uri: lb://user-service
-        predicates:
-        - Path=/user-service/*
-        filters:
-          - name: ModifyResponseBody
-            args:
-             in-class: java.lang.String
-             out-class: java.lang.String
-             rewrite-function: com.aisino.gateway.define.ResponseBodyRewriteFunction
 
 
 

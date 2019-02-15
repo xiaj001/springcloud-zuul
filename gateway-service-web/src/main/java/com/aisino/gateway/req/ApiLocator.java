@@ -1,5 +1,6 @@
 package com.aisino.gateway.req;
 
+import com.aisino.gateway.define.ResponseBodyRewriteFunction;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -22,84 +23,48 @@ import java.util.function.Function;
  * @create 2018-12-13 13:20
  * @since
  **/
-/*@EnableAutoConfiguration
-@Configuration*/
+@Configuration
 @Log4j2
 public class ApiLocator {
 
 
-    @Autowired
-    private RequestFilter requestFilter;
-
-    private static final String SERVICE = "/path/**";
-    private static final String URI = "http://127.0.0.1:8009";
-
     @Bean
-    public RouteLocator myRoutes(RouteLocatorBuilder builder) {
+    public RouteLocator routeLocator(RouteLocatorBuilder builder) {
 
+        RouteLocatorBuilder.Builder routes = builder.routes();
 
-        Function<PredicateSpec, Route.AsyncBuilder> fn  = new Function<PredicateSpec, Route.AsyncBuilder>(){
+        //租务 filters
+        Function<GatewayFilterSpec, UriSpec>  zuwuFilters = f -> {
+            //登录验证
 
-            @Override
-            public Route.AsyncBuilder apply(PredicateSpec predicateSpec) {
-                BooleanSpec path = predicateSpec.path("/baidu");
-                Route.AsyncBuilder result = path.uri("http://www.baidu.com");
-                return result;
-            }
+            //header添加user信息
+           // f.addRequestHeader("","");
+            //统一异常处理
+            f.modifyResponseBody(String.class,String.class,new ResponseBodyRewriteFunction());
+            return f;
         };
 
-        /*
-        route1 是get请求，get请求使用readBody会报错
-        route2 是post请求，Content-Type是application/x-www-form-urlencoded，readbody为String.class
-        route3 是post请求，Content-Type是application/json,readbody为Object.class
-         */
-        RouteLocatorBuilder.Builder routes = builder.routes();
-        RouteLocatorBuilder.Builder serviceProvider = routes
-                .route(
-                        r -> r
-                                .method(HttpMethod.GET)
-                                .and()
-                                .path(SERVICE)
-                                .filters(f -> {
-                                    f.filter(requestFilter);
-                                    return f;
-                                })
-                                .uri(URI))
-                .route("route2",
-                        r -> r
-                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                                .and()
-                                .method(HttpMethod.POST)
-                                .and()
-                                .readBody(String.class, readBody -> {
-                                    log.info("request method POST, Content-Type is application/x-www-form-urlencoded, body  is:{}", readBody);
-                                    return true;
-                                })
-                                .and()
-                                .path(SERVICE)
-                                .filters(f -> {
-                                    f.filter(requestFilter);
-                                    return f;
-                                })
-                                .uri(URI))
-                .route("route3",
-                        r -> r
-                                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                                .and()
-                                .method(HttpMethod.POST)
-                                .and()
-                                .readBody(Object.class, readBody -> {
-                                    log.info("request method POST, Content-Type is application/json, body  is:{}", readBody);
-                                    return true;
-                                })
-                                .and()
-                                .path(SERVICE)
-                                .filters(f -> {
-                                    f.filter(requestFilter);
-                                    return f;
-                                })
-                                .uri(URI));
-        RouteLocator routeLocator = serviceProvider.build();
+        //租务服务路由
+        Function<PredicateSpec, Route.AsyncBuilder> orderServiceRoute  = predicateSpec -> {
+            BooleanSpec op = predicateSpec.path("/user-service/*");
+            UriSpec filters = op.filters(zuwuFilters);
+            Route.AsyncBuilder result = filters.uri("lb://user-service");
+            return result;
+        };
+        routes = routes.route(orderServiceRoute);
+
+
+        //房源服务路由
+        /*Function<PredicateSpec, Route.AsyncBuilder> houseServiceRoute  = predicateSpec -> {
+            BooleanSpec.BooleanOpSpec op = predicateSpec.path("/baidu").and();
+            BooleanSpec path = op.path("");
+            UriSpec filters1 = path.filters(zuwuFilters);
+            Route.AsyncBuilder result = filters1.uri("http://www.baidu.com");
+            return result;
+        };
+        routes = routes.route(houseServiceRoute);*/
+
+        RouteLocator routeLocator = routes.build();
         log.info("custom RouteLocator is loading ... {}", routeLocator);
         return routeLocator;
     }
