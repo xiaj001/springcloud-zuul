@@ -1,9 +1,8 @@
 package com.aisino.gateway.filters;
 
-import com.aisino.gateway.dec.PartnerServerWebExchangeDecorator;
+import com.aisino.gateway.filters.global.AbstractGlobalFilter;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 

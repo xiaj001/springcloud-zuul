@@ -1,4 +1,4 @@
-package com.aisino.gateway.filters;
+package com.aisino.gateway.filters.global;
 
 /**
  * @author: xiajun003

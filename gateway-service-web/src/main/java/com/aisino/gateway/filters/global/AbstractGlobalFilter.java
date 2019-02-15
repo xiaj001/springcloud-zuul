@@ -1,4 +1,4 @@
-package com.aisino.gateway.filters;
+package com.aisino.gateway.filters.global;
 
 import com.aisino.gateway.dec.PartnerServerWebExchangeDecorator;
 import org.slf4j.Logger;

@@ -22,7 +22,7 @@ import java.io.UnsupportedEncodingException;
  * @Date: 2019/1/28 17:20
  * @Description:
  */
-@Component
+//@Component
 public class Test extends AbstractGlobalFilter {
 
 

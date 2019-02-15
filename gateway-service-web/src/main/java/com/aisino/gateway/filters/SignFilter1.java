@@ -1,5 +1,6 @@
 package com.aisino.gateway.filters;
 
+import com.aisino.gateway.filters.global.AbstractGlobalFilter;
 import com.aisino.gateway.utils.RequestUtil;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @Description:
  */
 @Component
-public class SignFilter1 extends AbstractGlobalFilter{
+public class SignFilter1 extends AbstractGlobalFilter {
 
     private static final List<HttpMessageReader<?>> messageReaders = HandlerStrategies.withDefaults().messageReaders();
 

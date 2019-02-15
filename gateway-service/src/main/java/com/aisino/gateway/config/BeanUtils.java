@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @Date: 2019/1/3 18:53
  * @Description:
  */
-@Component
+//@Component
 public class BeanUtils implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
