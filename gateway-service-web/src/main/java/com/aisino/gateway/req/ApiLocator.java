@@ -1,13 +1,14 @@
 package com.aisino.gateway.req;
 
-import com.aisino.gateway.define.ResponseBodyRewriteFunction;
 import com.aisino.gateway.filters.gateway.SignGatewayFilter;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import javax.annotation.Resource;
 import java.util.function.Function;
 
 /**
@@ -20,6 +21,8 @@ import java.util.function.Function;
 @Log4j2
 public class ApiLocator {
 
+    @Resource(name = "responseBodyRewriteFunction")
+    private RewriteFunction rewriteFunction;
 
     @Bean
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
@@ -38,23 +41,22 @@ public class ApiLocator {
            // f.addRequestHeader("","");
 
             //统一异常处理
-            f = f.modifyResponseBody(String.class, String.class, new ResponseBodyRewriteFunction());
+            f = f.modifyResponseBody(String.class, String.class, rewriteFunction);
             return f;
         };
 
         //租务服务路由
-        Function<PredicateSpec, Route.AsyncBuilder> orderServiceRoute  = predicateSpec -> {
-            predicateSpec = predicateSpec.order(-100000);
-            BooleanSpec op = predicateSpec.path("/user-service/*");
+        Function<PredicateSpec, Route.AsyncBuilder> zuwuServiceRoute  = predicateSpec -> {
+            //注意:此处的匹配，如果只有一个 * ,则不能全部匹配
+            BooleanSpec op = predicateSpec.path("/user-service/**");
             UriSpec filters = op.filters(zuwuFilters);
             Route.AsyncBuilder result = filters.uri("lb://user-service");
             return result;
         };
-        routes = routes.route(orderServiceRoute);
+        routes = routes.route(zuwuServiceRoute);
 
 
         RouteLocator routeLocator = routes.build();
-        log.info("custom RouteLocator is loading ... {}", routeLocator);
         return routeLocator;
     }
 }

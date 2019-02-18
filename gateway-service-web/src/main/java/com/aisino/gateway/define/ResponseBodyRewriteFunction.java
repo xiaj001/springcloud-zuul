@@ -16,14 +16,7 @@ public class ResponseBodyRewriteFunction implements RewriteFunction<String,Strin
     @Override
     public Publisher<String> apply(ServerWebExchange exchange, String s) {
         System.err.println(s);
-        return Mono.just("test body ......"+s);
+        return Mono.just("ResponseBodyRewriteFunction ========== ||||||||||");
     }
 
-
-
-
-    /*public Object apply(Object object, Object object2) {
-        System.err.println("ResponseBodyRewriteFunction ========== ||||||||||"  + object);
-        return object;
-    }*/
 }
